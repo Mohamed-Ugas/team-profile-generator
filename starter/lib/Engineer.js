@@ -1,19 +1,20 @@
 // TODO: Write code to define and export the Engineer class.  HINT: This class should inherit from Employee.
 
-class Manager extends Employee {
-    constructor(name, id, email, officeNumber) {
+class Engineer extends Employee {
+    constructor(name, id, email, github) {
         super(name, id, email);
-        this.officeNumber = officeNumber;
+        this.github = github;
     }
 
     getRole() {
-        return 'Manager';
+        return 'Engineer';
     }
 
-    getOfficeNumber() {
-        return this.officeNumber;
+    getGithub() {
+        return this.github;
     }
 }
 
-// Export the Manager class
-module.exports = Manager;
+// Export the Engineer class
+module.exports = Engineer;
+
