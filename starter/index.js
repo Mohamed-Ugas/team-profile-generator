@@ -18,10 +18,6 @@ const generateTeam = require("./src/page-template.js");
 
 const team = [];
 
-/
-
-
-
 //   After gathering the manager's information, present a menu to the user with options to add an engineer, add an intern, or finish building the team.
   async function start() {
     await inquirer.prompt([
