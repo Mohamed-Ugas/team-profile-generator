@@ -1,60 +1,65 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+
 const inquirer = require("inquirer");
+// import inquirer from "inquirer";
+
 const path = require("path");
 const fs = require("fs");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
-const render = require("./src/page-template.js");
+// const render = require("./src/page-template.js");
 
 // this is going to import the generateTeam function from the page-pageTemplate.js
 const generateTeam = require("./src/page-template.js");
 
+const team = [];
 
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
+/
 
-// Use Inquirer to prompt the user for the team manager's information (name, ID, email, and office number)
-inquirer.prompt([
-    {
-      type: "input",
-      name: "managerName",
-      message: "Enter the manager's name:",
-    },
-    {
-      type: "input",
-      name: "managerId",
-      message: "Enter the manager's employee ID:",
-    },
-    {
-      type: "input",
-      name: "managerEmail",
-      message: "Enter the manager's email address:",
-    },
-    {
-      type: "input",
-      name: "managerOfficeNumber",
-      message: "Enter the manager's office number:",
-    },
-  ])
-  .then((managerData) => {
-    // Create a Manager object using the provided data
-    const manager = new Manager(
-      managerData.managerName,
-      managerData.managerId,
-      managerData.managerEmail,
-      managerData.managerOfficeNumber
-    );
-
-    // Continue to the next steps (add engineer, add intern, or finish)
-  });
 
 
 //   After gathering the manager's information, present a menu to the user with options to add an engineer, add an intern, or finish building the team.
-  function mainMenu() {
-    inquirer.prompt([
+  async function start() {
+    await inquirer.prompt([
+        {
+          type: "input",
+          name: "managerName",
+          message: "Enter the manager's name:",
+        },
+        {
+          type: "input",
+          name: "managerId",
+          message: "Enter the manager's employee ID:",
+        },
+        {
+          type: "input",
+          name: "managerEmail",
+          message: "Enter the manager's email address:",
+        },
+        {
+          type: "input",
+          name: "managerOfficeNumber",
+          message: "Enter the manager's office number:",
+        },
+      ])
+      .then((managerData) => {
+        // Create a Manager object using the provided data
+        const manager = new Manager(
+          managerData.managerName,
+          managerData.managerId,
+          managerData.managerEmail,
+          managerData.managerOfficeNumber
+        );
+
+        team.push(manager);
+      });
+
+    await inquirer.prompt([
+        
         {
           type: "list",
           name: "menuChoice",
@@ -66,6 +71,7 @@ inquirer.prompt([
         // Depending on the user's choice, call the respective function
         if (menuData.menuChoice === "Add Engineer") {
           // Call a function to add an engineer
+            addEngineer();
         } else if (menuData.menuChoice === "Add Intern") {
           // Call a function to add an intern
         } else {
@@ -76,44 +82,90 @@ inquirer.prompt([
           console.log("Team HTML generated successfully!");
         }
       });
+     }
 
       function addEngineer() {
         inquirer
           .prompt([
             // Prompt to collect engineer's information
+            {
+                type: "input",
+                name: "engineerName",
+                message: "Enter the engineer's name:",
+              },
+              {
+                type: "input",
+                name: "engineerId",
+                message: "Enter the engineer's employee ID:",
+              },
+              {
+                type: "input",
+                name: "engineerEmail",
+                message: "Enter the engineer's email address:",
+              },
+              {
+                type: "input",
+                name: "engineerGithub",
+                message: "Enter the engineer's github username:",
+              },  
           ])
           .then((engineerData) => {
             // Create an Engineer object and push it to the team array
-          });
+            const engineer = new Engineer(
+                engineerData.engineerName,
+                engineerData.engineerId,
+                engineerData.engineerEmail,
+                engineerData.engineerGithub
+              );
+              team.push(engineer);
+            });    
       }
       
       function addIntern() {
-        inquirer
-          .prompt([
+        inquirer.prompt([
             // Prompt to collect intern's information
-          ])
+            {
+                type: "input",
+                name: "internName",
+                message: "Enter the intern's name:",
+              },
+              {
+                type: "input",
+                name: "internId",
+                message: "Enter the intern's ID:",
+              },
+              {
+                type: "input",
+                name: "internEmail",
+                message: "Enter the intern's email address:",
+              },
+              {
+                type: "input",
+                name: "internSchool",
+                message: "Enter the intern's school",
+              },
+            ])
           .then((internData) => {
             // Create an Intern object and push it to the team array
-          });
-      }
+            const intern = new Intern(
+                internData.internName,
+                internData.internId,
+                internData.internEmail,
+                internData.internSchool
+              );
+              team.push(intern);
+            });  
+        }
      
-      // Call the generateTeam function and pass in the 'team' array
+    //   Call the generateTeam function and pass in the 'team' array
         const html = generateTeam(team);
 
         // Write the HTML to a file
         fs.writeFileSync(outputPath, html);
         console.log("Team HTML generated successfully!");
 
-  }
+  
   
   // Start by calling the main menu
-  mainMenu();
+    start();
   
-  // Write the generated HTML to a file (STEP 5)
-  fs.writeFile(outputPath, html, (err) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log('team.html has been successfully written to the output folder.');
-  })
